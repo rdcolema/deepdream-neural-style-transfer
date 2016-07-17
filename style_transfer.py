@@ -10,9 +10,6 @@ from scipy.misc import imsave
 from scipy.optimize import minimize
 from skimage import img_as_ubyte
 from skimage.transform import rescale
-import PIL.Image
-from cStringIO import StringIO
-import cv2
 
 # logging
 LOG_FORMAT = "%(filename)s:%(funcName)s:%(asctime)s.%(msecs)03d -- %(message)s"
@@ -48,19 +45,6 @@ CAFFENET_WEIGHTS = {"content": {"conv4": 1},
                               "conv3": 0.2,
                               "conv4": 0.2,
                               "conv5": 0.2}}
-
-
-showimages = True
-
-def showarray(a, fmt='jpeg'):
-    a = np.uint8(np.clip(a, 0, 255))
-    f = StringIO()
-    PIL.Image.fromarray(a).save(f, fmt)
-    global showimages
-    if showimages:
-        a = cv2.cvtColor(a, cv2.COLOR_BGR2RGB)
-        cv2.imshow('image', a)
-        cv2.waitKey(1)
 
 
 def _compute_style_grad(F, G, G_style, layer):
@@ -306,7 +290,6 @@ class StyleTransfer(object):
         """
 
         # get new dimensions and rescale net + transformer
-        showarray(img)
         new_dims = (1, img.shape[2]) + img.shape[:2]
         self.net.blobs["data"].reshape(*new_dims)
         self.transformer.inputs["data"] = new_dims
