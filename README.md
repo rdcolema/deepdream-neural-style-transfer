@@ -18,4 +18,5 @@ Requires caffe and certain pre-trained models (bvlc_googlenet and vgg16)
 <img src="https://raw.githubusercontent.com/rdcolema/deepdream-neural-style-transfer/master/examples/emlets.jpg" width="30%"/>
 <img src="https://raw.githubusercontent.com/rdcolema/deepdream-neural-style-transfer/master/examples/da_lucy.jpg" width="30%"/>
 <img src="https://raw.githubusercontent.com/rdcolema/deepdream-neural-style-transfer/master/examples/mona_picasso.jpg" width="40%"/>
+<img src="https://raw.githubusercontent.com/rdcolema/deepdream-neural-style-transfer/master/examples/psych_pearl.jpg" width="40%"/>
 </p>
