@@ -8,10 +8,9 @@ import cv2
 import caffe
 
 
-# If your GPU supports CUDA and Caffe was built with CUDA support,
-# uncomment the following to run Caffe operations on the GPU.
+# for GPU acceleration:
 # caffe.set_mode_gpu()
-# caffe.set_device(0) # select GPU device if multiple devices exist
+# caffe.set_device(0)   # if multiple devices exist
 
 showimages = True
 
@@ -32,7 +31,6 @@ net_fn = model_path + 'deploy.prototxt'
 param_fn = model_path + 'bvlc_googlenet.caffemodel'
 
 # Patching model to be able to compute gradients.
-# Note that you can also manually add "force_backward: true" line to "deploy.prototxt".
 model = caffe.io.caffe_pb2.NetParameter()
 text_format.Merge(open(net_fn).read(), model)
 model.force_backward = True
@@ -43,7 +41,7 @@ net = caffe.Classifier('tmp.prototxt', param_fn,
                        channel_swap=(2, 1, 0))  # the reference model has channels in BGR order instead of RGB
 
 
-# a couple of utility functions for converting to and from Caffe's input image layout
+# utility functions for converting to and from Caffe's input image layout
 def preprocess(net, img):
     return np.float32(np.rollaxis(img, 2)[::-1]) - net.transformer.mean['data']
 
@@ -53,7 +51,7 @@ def deprocess(net, img):
 
 
 def make_step(net, step_size=.7, end='inception_5a/pool_proj', jitter=32, clip=True):
-    '''Basic gradient ascent step.'''
+    '''Basic gradient ascent step'''
 
     src = net.blobs['data']  # input image is stored in Net's 'data' blob
     dst = net.blobs[end]
@@ -113,20 +111,7 @@ def deepdream(net, base_img, iter_n=70, octave_n=7, octave_scale=1.4, end='incep
 img = np.float32(PIL.Image.open('<path to image>'))
 showarray(img)
 
-frame = deepdream(net, img)
-PIL.Image.fromarray(np.uint8(frame)).save("result_b.jpg")
-
-# frame = deepdream(net, img, end='inception_3b/5x5_reduce')
-# PIL.Image.fromarray(np.uint8(frame)).save("result_b.jpg")
-#
-# frame = img
-# frame_i = 0
-# h, w = frame.shape[:2]
-# s = 0.05  # scale coefficient
-# for i in xrange(100):
-#     frame = deepdream(net, frame)
-#     PIL.Image.fromarray(np.uint8(frame)).save("frames/%04d.jpg" % frame_i)
-#     frame = nd.affine_transform(frame, [1 - s, 1 - s, 1], [h * s / 2, w * s / 2, 0], order=1)
-#     frame_i += 1
+frame = deepdream(net, img)   # you can specify a different convolution/pooling layer here w/ the `end` argument
+PIL.Image.fromarray(np.uint8(frame)).save("result.jpg")
 
 cv2.destroyAllWindows()
