@@ -8,10 +8,9 @@ from google.protobuf import text_format
 import cv2
 import caffe
 
-# If your GPU supports CUDA and Caffe was built with CUDA support,
-# uncomment the following to run Caffe operations on the GPU.
+# uncomment for GPU acceleration
 # caffe.set_mode_gpu()
-# caffe.set_device(0) # select GPU device if multiple devices exist
+# caffe.set_device(0)
 
 showimages = True
 
@@ -32,7 +31,6 @@ net_fn = model_path + 'deploy.prototxt'
 param_fn = model_path + 'bvlc_googlenet.caffemodel'
 
 # Patching model to be able to compute gradients.
-# Note that you can also manually add "force_backward: true" line to "deploy.prototxt".
 model = caffe.io.caffe_pb2.NetParameter()
 text_format.Merge(open(net_fn).read(), model)
 model.force_backward = True
@@ -43,7 +41,7 @@ net = caffe.Classifier('tmp.prototxt', param_fn,
                        channel_swap=(2, 1, 0))  # the reference model has channels in BGR order instead of RGB
 
 
-# a couple of utility functions for converting to and from Caffe's input image layout
+# utility functions for converting to and from Caffe's input image layout
 def preprocess(net, img):
     return np.float32(np.rollaxis(img, 2)[::-1]) - net.transformer.mean['data']
 
@@ -58,7 +56,7 @@ def objective_L2(dst):
 
 def make_step(net, step_size=1.0, end='inception_3b/5x5_reduce',
                   jitter=32, clip=True):
-    '''Basic gradient ascent step.'''
+    '''Basic gradient ascent step'''
 
     src = net.blobs['data']  # input image is stored in Net's 'data' blob
     dst = net.blobs[end]
@@ -132,8 +130,8 @@ def objective_guide(dst):
     ch = x.shape[0]
     x = x.reshape(ch,-1)
     y = y.reshape(ch,-1)
-    A = x.T.dot(y) # compute the matrix of dot-products with guide features
-    dst.diff[0].reshape(ch,-1)[:] = y[:,A.argmax(1)] # select ones that match best
+    A = x.T.dot(y)    # compute the matrix of dot-products with guide features
+    dst.diff[0].reshape(ch,-1)[:] = y[:,A.argmax(1)]   # select ones that match best
 
-frame = deepdream(net, img, end=end)
-PIL.Image.fromarray(np.uint8(frame)).save("result_b.jpg")
+frame = deepdream(net, img, end=end)   # can specify different convolutional/pooling layer with `end` argument here
+PIL.Image.fromarray(np.uint8(frame)).save("result.jpg")
