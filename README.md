@@ -1,9 +1,7 @@
 # Deepdream / Neural Style Transfer
-Implementation of Google Deepdream w/ extra style transfer scripts
+Implementation of Google Deepdream w/ extra style transfer scripts. Based on [Google's tutorial code](https://github.com/google/deepdream) and [these style transfer scripts](https://github.com/fzliu/style-transfer).
 
-Based on https://github.com/google/deepdream and https://github.com/fzliu/style-transfer
-
-Requires caffe and certain pre-trained models (bvlc_googlenet and vgg16)
+Requires caffe
 
 <h2>Examples: </h2>
 
@@ -23,6 +21,6 @@ Requires caffe and certain pre-trained models (bvlc_googlenet and vgg16)
 
 <h3>Installation</h3>
 
-Installing caffe on Windows isn't easy, but I ended up having some success using a virtual machine and following the instructions from <a href="http://www.alanzucconi.com/2016/05/25/generating-deep-dreams/">this tutorial</a>. The hardest part here is getting the right paths set in your .bashrc file (as far as I can tell you can skip the caffe.conf step if you get the .bashrc paths right). 
+Installing caffe on Windows isn't easy, but I ended up having some success using a virtual machine and following the instructions from <a href="http://www.alanzucconi.com/2016/05/25/generating-deep-dreams/">this tutorial</a>.
 
 For the style transfer scripts, you also might need to go out and download some models on your own, which I got from <a href="https://github.com/BVLC/caffe/wiki/Model-Zoo">here</a>. VGG16 seems to work best for me. 
